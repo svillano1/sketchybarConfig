@@ -1,0 +1,13 @@
+Google Chrome
+Firefox
+Finder
+kitty
+Microsoft Azure Storage Explorer
+Notion
+Postman
+Slack
+Sublime Text
+Tailscale
+Windows App
+1Password
+Tunnelblick

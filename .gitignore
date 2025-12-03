@@ -1,0 +1,6 @@
+# Cache directories
+app_icons/
+.tab_state/
+
+# macOS files
+.DS_Store
