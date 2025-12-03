@@ -196,16 +196,24 @@ for state_file in "$STATE_DIR"/current_*; do
 
     app_icon=$(get_app_icon "$app_name")
 
-    # Determine background color based on focus
+    # All tabs use the same background, focus shown with border
+    bg_color="0x88000000"
+
+    # Determine border based on focus
     if [ "$app_name" = "$focused_app" ]; then
-        bg_color="0x88000000"  # Darker for focused app
+        border_color="0xffCC8866"  # Grey-orange border for focused app
+        border_width=2
     else
-        bg_color="0x44ffffff"  # Normal color for unfocused apps
+        border_color="0x00000000"  # Transparent border for unfocused
+        border_width=0
     fi
 
     if [ $tab_exists -eq 1 ]; then
-        # Update existing tab - set background color
-        sketchybar --set "$item_name" background.color="$bg_color"
+        # Update existing tab - set background color and border
+        sketchybar --set "$item_name" \
+                   background.color="$bg_color" \
+                   background.border_color="$border_color" \
+                   background.border_width="$border_width"
 
         if [ "$window_count" -gt 1 ]; then
             case "$window_count" in
@@ -288,6 +296,8 @@ for state_file in "$STATE_DIR"/current_*; do
                        background.color="$bg_color" \
                        background.corner_radius=4 \
                        background.height=22 \
+                       background.border_color="$border_color" \
+                       background.border_width="$border_width" \
                        padding_left=4 \
                        padding_right=4 \
                        icon.padding_left=42 \
@@ -305,6 +315,8 @@ for state_file in "$STATE_DIR"/current_*; do
                        background.color="$bg_color" \
                        background.corner_radius=4 \
                        background.height=22 \
+                       background.border_color="$border_color" \
+                       background.border_width="$border_width" \
                        padding_left=4 \
                        padding_right=4 \
                        icon.padding_left=42 \
