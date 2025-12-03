@@ -123,6 +123,7 @@ tell application "System Events"
     set appList to every application process whose background only is false
     repeat with appProc in appList
         set appName to name of appProc
+        set originalAppName to appName
 
         -- Rename Electron apps to their actual names
         if appName is "Electron" then
@@ -147,7 +148,7 @@ tell application "System Events"
                         set windowNames to windowNames & "||" & windowName
                     end if
                 end repeat
-                set output to output & appName & "|" & windowCount & "|" & windowNames & linefeed
+                set output to output & appName & "|" & originalAppName & "|" & windowCount & "|" & windowNames & linefeed
             end if
         end try
     end repeat
@@ -167,12 +168,12 @@ existing_tabs=$(sketchybar --query bar | grep '"window.tab\.[^.]*"' | grep -v '\
 rm -f "$STATE_DIR"/current_*
 
 # Parse window data and save to state files
-echo "$window_data" | while IFS='|' read -r app_name window_count window_names; do
+echo "$window_data" | while IFS='|' read -r app_name original_app_name window_count window_names; do
     [ -z "$app_name" ] && continue
     [ -z "$window_count" ] && continue
 
     app_id=$(echo "${app_name}" | md5 | cut -c1-8)
-    echo "$app_name|$window_count|$window_names" > "$STATE_DIR/current_${app_id}"
+    echo "$app_name|$original_app_name|$window_count|$window_names" > "$STATE_DIR/current_${app_id}"
 done
 
 # Process each current app
@@ -180,7 +181,7 @@ for state_file in "$STATE_DIR"/current_*; do
     [ ! -f "$state_file" ] && continue
 
     app_id=$(basename "$state_file" | sed 's/^current_//')
-    IFS='|' read -r app_name window_count window_names < "$state_file"
+    IFS='|' read -r app_name original_app_name window_count window_names < "$state_file"
 
     item_name="window.tab.${app_id}"
 
@@ -222,16 +223,22 @@ for state_file in "$STATE_DIR"/current_*; do
             sketchybar --set "$item_name" \
                        label="$display_name  $badge" \
                        label.font="Formula1:Regular:12.0" \
-                       label.padding_left=8 \
-                       label.padding_right=12 \
-                       icon.padding_left=2
+                       padding_left=4 \
+                       padding_right=4 \
+                       icon.padding_left=42 \
+                       icon.padding_right=14 \
+                       label.padding_left=24 \
+                       label.padding_right=56
         else
             sketchybar --set "$item_name" \
                        label="$display_name" \
                        label.font="Formula1:Regular:11.0" \
-                       label.padding_left=8 \
-                       label.padding_right=12 \
-                       icon.padding_left=2
+                       padding_left=4 \
+                       padding_right=4 \
+                       icon.padding_left=42 \
+                       icon.padding_right=14 \
+                       label.padding_left=24 \
+                       label.padding_right=56
         fi
 
         # Update popup items
@@ -247,10 +254,10 @@ for state_file in "$STATE_DIR"/current_*; do
                     popup_label="${popup_label:0:37}..."
                 fi
 
-                escaped_app_name="${app_name//\'/\\\'}"
+                escaped_app_name="${original_app_name//\'/\\\'}"
                 escaped_window_name="${window_name//\'/\\\'}"
 
-                click_script="osascript -e 'tell application \"$escaped_app_name\" to activate' -e 'tell application \"System Events\" to tell process \"$escaped_app_name\" to perform action \"AXRaise\" of (first window whose name is \"$escaped_window_name\")' && sketchybar --set $item_name popup.drawing=off"
+                click_script="osascript -e 'tell application \"System Events\" to tell process \"$escaped_app_name\" to set frontmost to true' -e 'tell application \"System Events\" to tell process \"$escaped_app_name\" to perform action \"AXRaise\" of (first window whose name is \"$escaped_window_name\")' && sketchybar --set $item_name popup.drawing=off"
 
                 sketchybar --add item "$popup_item" popup."$item_name" \
                            --set "$popup_item" \
@@ -334,10 +341,10 @@ for state_file in "$STATE_DIR"/current_*; do
                     popup_label="${popup_label:0:37}..."
                 fi
 
-                escaped_app_name="${app_name//\'/\\\'}"
+                escaped_app_name="${original_app_name//\'/\\\'}"
                 escaped_window_name="${window_name//\'/\\\'}"
 
-                click_script="osascript -e 'tell application \"$escaped_app_name\" to activate' -e 'tell application \"System Events\" to tell process \"$escaped_app_name\" to perform action \"AXRaise\" of (first window whose name is \"$escaped_window_name\")' && sketchybar --set $item_name popup.drawing=off"
+                click_script="osascript -e 'tell application \"System Events\" to tell process \"$escaped_app_name\" to set frontmost to true' -e 'tell application \"System Events\" to tell process \"$escaped_app_name\" to perform action \"AXRaise\" of (first window whose name is \"$escaped_window_name\")' && sketchybar --set $item_name popup.drawing=off"
 
                 sketchybar --add item "$popup_item" popup."$item_name" \
                            --set "$popup_item" \
@@ -356,10 +363,10 @@ for state_file in "$STATE_DIR"/current_*; do
         else
             # Single window - set click to focus directly
             window_name=$(echo "$window_names" | head -1)
-            escaped_app_name="${app_name//\'/\\\'}"
+            escaped_app_name="${original_app_name//\'/\\\'}"
             escaped_window_name="${window_name//\'/\\\'}"
 
-            click_script="osascript -e 'tell application \"$escaped_app_name\" to activate' -e 'tell application \"System Events\" to tell process \"$escaped_app_name\" to perform action \"AXRaise\" of (first window whose name is \"$escaped_window_name\")'"
+            click_script="osascript -e 'tell application \"System Events\" to tell process \"$escaped_app_name\" to set frontmost to true' -e 'tell application \"System Events\" to tell process \"$escaped_app_name\" to perform action \"AXRaise\" of (first window whose name is \"$escaped_window_name\")'"
 
             sketchybar --set "$item_name" click_script="$click_script"
         fi
