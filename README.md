@@ -35,31 +35,164 @@ A customized macOS menu bar replacement using SketchyBar with window tabs and qu
 
 ## Installation
 
-1. Install SketchyBar:
+### Prerequisites
+
+Before installing this configuration, make sure you have:
+
+1. **macOS** (tested on macOS Sonoma and later)
+2. **Homebrew** - [Install Homebrew](https://brew.sh/) if you don't have it:
    ```bash
-   brew install sketchybar
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
 
-2. Clone or copy this configuration to `~/.config/sketchybar/`:
-   ```bash
-   cp -r /path/to/this/repo ~/.config/sketchybar/
-   ```
+### Step-by-Step Installation
 
-3. Make scripts executable:
-   ```bash
-   chmod +x ~/.config/sketchybar/plugins/*.sh
-   chmod +x ~/.config/sketchybar/scripts/*.sh
-   ```
+#### 1. Install SketchyBar
 
-4. Add the `ql-manage` alias to your `~/.zshrc`:
-   ```bash
-   alias ql-manage="$HOME/.config/sketchybar/scripts/manage_quick_launch.sh"
-   ```
+```bash
+brew tap FelixKratz/formulae
+brew install sketchybar
+```
 
-5. Start SketchyBar:
-   ```bash
-   brew services start sketchybar
-   ```
+#### 2. Backup Existing Configuration (if any)
+
+If you already have a SketchyBar configuration, back it up:
+
+```bash
+mv ~/.config/sketchybar ~/.config/sketchybar.backup
+```
+
+#### 3. Clone This Configuration
+
+```bash
+git clone https://github.com/svillano1/sketchybarConfig.git ~/.config/sketchybar
+```
+
+Alternatively, download and extract the repository:
+```bash
+# Download the repository as a zip
+curl -L https://github.com/svillano1/sketchybarConfig/archive/refs/heads/main.zip -o sketchybar-config.zip
+
+# Extract to the correct location
+unzip sketchybar-config.zip
+mkdir -p ~/.config
+mv sketchybarConfig-main ~/.config/sketchybar
+
+# Clean up
+rm sketchybar-config.zip
+```
+
+#### 4. Make Scripts Executable
+
+```bash
+chmod +x ~/.config/sketchybar/plugins/*.sh
+chmod +x ~/.config/sketchybar/scripts/*.sh
+chmod +x ~/.config/sketchybar/sketchybarrc
+```
+
+#### 5. Configure Shell Alias (Optional but Recommended)
+
+Add the Quick Launch management alias to your shell configuration:
+
+For **zsh** (default on modern macOS):
+```bash
+echo 'alias ql-manage="$HOME/.config/sketchybar/scripts/manage_quick_launch.sh"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+For **bash**:
+```bash
+echo 'alias ql-manage="$HOME/.config/sketchybar/scripts/manage_quick_launch.sh"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+#### 6. Customize Quick Launch Apps (Optional)
+
+Edit the Quick Launch apps list before starting:
+
+```bash
+nano ~/.config/sketchybar/quick_launch_apps.txt
+```
+
+Or use the default apps and modify later with `ql-manage`.
+
+#### 7. Install Formula1 Font (Optional)
+
+The configuration uses the Formula1 font. If you don't have it, install it or the configuration will fall back to system fonts:
+
+```bash
+# Download and install Formula1 font from your font source
+# Or the bar will automatically use SF Pro as fallback
+```
+
+#### 8. Start SketchyBar
+
+Start SketchyBar as a service (will auto-start on login):
+
+```bash
+brew services start sketchybar
+```
+
+Or run it manually for testing:
+
+```bash
+sketchybar
+```
+
+#### 9. Verify Installation
+
+Check if SketchyBar is running:
+
+```bash
+ps aux | grep sketchybar
+```
+
+You should see SketchyBar in your menu bar with:
+- Space indicators on the left
+- Window tabs for open applications
+- CPU, memory, battery, and clock on the right
+- Quick Launch icons before the right separator
+
+### Post-Installation
+
+#### Reload Configuration
+
+After making changes to configuration files:
+
+```bash
+sketchybar --reload
+```
+
+#### Restart SketchyBar Service
+
+If you need to completely restart SketchyBar:
+
+```bash
+brew services restart sketchybar
+```
+
+#### Stop SketchyBar
+
+To stop SketchyBar:
+
+```bash
+brew services stop sketchybar
+```
+
+#### Customize Quick Launch
+
+Use the GUI management tool to add/remove apps:
+
+```bash
+ql-manage
+```
+
+Or manually edit the apps list:
+
+```bash
+nano ~/.config/sketchybar/quick_launch_apps.txt
+sketchybar --reload
+```
 
 ## Configuration Structure
 
