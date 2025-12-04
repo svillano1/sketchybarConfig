@@ -72,6 +72,7 @@ sketchybar --add item window_separator left \
 sketchybar --add event window_change \
            --add item window_tabs_trigger left \
            --set window_tabs_trigger drawing=off \
+                 update_freq=2 \
                  script="$PLUGIN_DIR/window_tabs.sh" \
            --subscribe window_tabs_trigger front_app_switched space_change window_focus window_created window_destroyed application_launched application_terminated
 
