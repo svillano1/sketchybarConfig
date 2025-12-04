@@ -6,12 +6,11 @@ A customized macOS menu bar replacement using SketchyBar with window tabs and qu
 
 ### Window Tabs
 - **Dynamic application tabs** that show all open applications with windows
-- **Focus highlighting** - darker background for the currently focused app
+- **Focus highlighting** - grey-orange border around the currently focused app
 - **Window count badges** - visual indicators (❷, ❸, etc.) for apps with multiple windows
 - **Click to focus** - single-window apps activate on click
 - **Window popup menu** - multi-window apps show a popup menu to select specific windows
 - **Auto-refresh** - tabs update automatically when apps launch, quit, or windows change
-- **Display filtering** - only shows tabs for windows on the current display (displays 1 and 2)
 
 ### Quick Launch
 - **Icon-only launcher** on the right side of the menu bar
